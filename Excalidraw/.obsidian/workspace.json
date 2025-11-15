@@ -1,0 +1,257 @@
+{
+  "main": {
+    "id": "613fedb1769aad49",
+    "type": "split",
+    "children": [
+      {
+        "id": "75ea377db74d1a71",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ca08ea596b4430eb",
+            "type": "leaf",
+            "state": {
+              "type": "excalidraw",
+              "state": {
+                "file": "main.excalidraw.md"
+              },
+              "icon": "excalidraw-icon",
+              "title": "main.excalidraw"
+            }
+          },
+          {
+            "id": "d95bebf0d336423d",
+            "type": "leaf",
+            "state": {
+              "type": "excalidraw",
+              "state": {
+                "file": "main.excalidraw.md"
+              },
+              "icon": "excalidraw-icon",
+              "title": "main.excalidraw"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "44897b5e9006d788",
+    "type": "split",
+    "children": [
+      {
+        "id": "8cfdbf97f1589117",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d890c8191208acfd",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "507f60c10771205e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": true,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "de4915c64fba4f01",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 209.5
+  },
+  "right": {
+    "id": "354adb2d95b9f673",
+    "type": "split",
+    "children": [
+      {
+        "id": "c33a12c8fb71467c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4644002453aa67de",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          },
+          {
+            "id": "ca4f813812c40044",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Excalidraw/1.excalidraw.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": false
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 1.excalidraw"
+            }
+          },
+          {
+            "id": "35c7988a224dd393",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Excalidraw/1.excalidraw.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 1.excalidraw"
+            }
+          },
+          {
+            "id": "1f0200db3760cc3d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "5511d8d160455a4f",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Excalidraw/1.excalidraw.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 1.excalidraw"
+            }
+          },
+          {
+            "id": "761be8a2e15b5a67",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "lucide-ghost",
+              "title": "git-view"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "bases:Create new base": false,
+      "graph:Open graph view": false,
+      "switcher:Open quick switcher": false,
+      "canvas:Create new canvas": false,
+      "command-palette:Open command palette": false,
+      "templates:Insert template": false,
+      "daily-notes:Open today's daily note": false,
+      "obsidian-git:Open Git source control": false,
+      "obsidian-excalidraw-plugin:New drawing": false
+    }
+  },
+  "active": "d95bebf0d336423d",
+  "lastOpenFiles": [
+    "reverseEngineering.excalidraw.md",
+    "Java Class.md",
+    "SPRING BOOT STARTUP LIFECYCLE.md",
+    "main.excalidraw.md",
+    "Excalidraw/Drawing 2025-11-14 23.24.11.excalidraw.md",
+    "Excalidraw/Drawing 2025-11-14 23.24.09.excalidraw.md",
+    "Excalidraw",
+    "download.png",
+    "arrw.svg",
+    "docker-data/mongodb/WiredTiger.turtle.set",
+    "Excalidraw/main.excalidraw.md",
+    "Excalidraw/reverseEngineering.excalidraw.md",
+    "target/classes/application.properties",
+    "src/main/java/com/example/lets_play/LetsPlayApplication.java",
+    "src/main/java/com/example/lets_play/main.java",
+    "Excalidraw/arrw.svg",
+    "Excalidraw/How the external modules fit in spring flow?.md",
+    "Excalidraw/Pasted Image 20251113231220_684.svg",
+    "Excalidraw/External Modules.md",
+    "Excalidraw/zerqzgh.svg",
+    "Excalidraw/qsdfsdf.svg",
+    "Excalidraw/Spring vs Spring Boot Analogy.md",
+    "Excalidraw/sdfsdfqe.svg",
+    "README.md",
+    "Excalidraw/darrw.svg",
+    "Excalidraw/pngwing.com.png",
+    "Excalidraw/Spring name origin.md",
+    "sdfsdf.svg",
+    "Excalidraw/What is Spring Boot.md",
+    "Excalidraw/What is spring.md",
+    "target/surefire/surefirebooter-20251113164345105_3.jar",
+    "target/surefire/surefire_0-20251113164345105_2tmp",
+    "target/surefire/surefire-20251113164345105_1tmp",
+    "target/surefire",
+    "src/main/java/com/example/lets_play/dto/ApiError.java",
+    "Excalidraw/How does the internet work.excalidraw.md",
+    "Excalidraw/StpQuestion 3.md",
+    "Excalidraw/TP1.excalidraw.md",
+    "StpQuestion 1.md",
+    "ARP.md",
+    "Excalidraw/DHCP.md",
+    "StpQuestion 2.md",
+    "DNS Setup.md",
+    "VirtualBox network.md",
+    "sysctl.md",
+    "Troubleshooting DNS lookup.md",
+    "Untitled.canvas",
+    "Untitled 1.canvas"
+  ]
+}

@@ -42,6 +42,13 @@ _mongo-up:
 		echo "Docker Compose is required to start MongoDB automatically (install Docker Desktop or docker-compose)."; \
 		exit 1; \
 	fi; \
+	if command -v docker >/dev/null 2>&1; then \
+		CONTAINER_NAME="lets-play-mongo"; \
+		if docker ps -a --format '{{.Names}}' | grep -Fxq "$$CONTAINER_NAME"; then \
+			echo "Removing stale MongoDB container $$CONTAINER_NAME ..."; \
+			docker rm -f "$$CONTAINER_NAME" >/dev/null 2>&1 || true; \
+		fi; \
+	fi; \
 	echo "Starting MongoDB container using $$COMPOSE_CMD ..."; \
 	$$COMPOSE_CMD up -d mongo; \
 	echo "MongoDB container is ready."

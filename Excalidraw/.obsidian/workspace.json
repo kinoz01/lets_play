@@ -15,8 +15,8 @@
               "state": {
                 "file": "main.excalidraw.md"
               },
-              "icon": "excalidraw-icon",
-              "title": "main.excalidraw"
+              "icon": "lucide-ghost",
+              "title": "excalidraw"
             }
           },
           {
@@ -25,10 +25,10 @@
             "state": {
               "type": "excalidraw",
               "state": {
-                "file": "main.excalidraw.md"
+                "file": "reverseEngineering.excalidraw.md"
               },
               "icon": "excalidraw-icon",
-              "title": "main.excalidraw"
+              "title": "reverseEngineering.excalidraw"
             }
           }
         ],
@@ -89,7 +89,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 209.5
+    "width": 209.5,
+    "collapsed": true
   },
   "right": {
     "id": "354adb2d95b9f673",
@@ -205,10 +206,10 @@
   },
   "active": "d95bebf0d336423d",
   "lastOpenFiles": [
+    "main.excalidraw.md",
     "reverseEngineering.excalidraw.md",
     "Java Class.md",
     "SPRING BOOT STARTUP LIFECYCLE.md",
-    "main.excalidraw.md",
     "Excalidraw/Drawing 2025-11-14 23.24.11.excalidraw.md",
     "Excalidraw/Drawing 2025-11-14 23.24.09.excalidraw.md",
     "Excalidraw",

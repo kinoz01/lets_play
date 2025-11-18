@@ -10,7 +10,7 @@ help:
 	@echo "  make stop        - stops the Spring Boot app (CTRL+C) and dockerized MongoDB"
 
 run: mongo-up
-	./mvnw spring-boot:run
+	./mvnw spring-boot:run 
 
 build:
 	./mvnw clean package

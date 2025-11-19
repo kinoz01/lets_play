@@ -104,7 +104,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 209.5
+    "width": 209.5,
+    "collapsed": true
   },
   "right": {
     "id": "354adb2d95b9f673",
@@ -222,6 +223,7 @@
   "lastOpenFiles": [
     "RateLimitingFilter.md",
     "excali/Reverse Engineering.excalidraw.md",
+    "computeIfAbsent.md",
     "excali/main.excalidraw.md",
     "ObjectMapper.md",
     "thread-safe.md",
@@ -248,7 +250,6 @@
     "Maven Wrapper - mvnw.md",
     "site lifecycle.md",
     "Pasted Image 20251118093615_920.png",
-    "REST API.md",
     "excali",
     "Untitled.base",
     "Pasted Image 20251116215902_530.png",

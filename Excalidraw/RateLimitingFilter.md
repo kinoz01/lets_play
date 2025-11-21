@@ -20,9 +20,7 @@ This method is executed for every incoming request that passes the `shouldNotFil
 
 1. **Identify Client:**
     
-    Java
-    
-    ```
+    ```java
     String ip = request.getRemoteAddr();
     ```
     
@@ -30,19 +28,15 @@ This method is executed for every incoming request that passes the `shouldNotFil
     
 2. **Get/Create Bucket:**
     
-    Java
-    
-    ```
+    ```java
     SimpleBucket bucket = cache.computeIfAbsent(ip, this::createBucket);
     ```
     
 	[[computeIfAbsent]] retrieves the token bucket associated with the IP address. If the IP is new, `createBucket` is called to initialize a new `SimpleBucket` with full capacity.
     
-3. **Consume Token (The Decision):**
+1. **Consume Token (The Decision):**
     
-    Java
-    
-    ```
+    ```java
     if (bucket.tryConsume(1)) {
         filterChain.doFilter(request, response);
     } else {
@@ -52,7 +46,7 @@ This method is executed for every incoming request that passes the `shouldNotFil
     
     It attempts to consume one token.
     
-    - **Success:** If a token is consumed, the request is allowed to pass down the filter chain to the controller (`filterChain.doFilter`).
+    - **Success:** If a token is consumed, the request is allowed to pass down the [[filter chain]] to the controller (`filterChain.doFilter`).
         
     - **Failure:** If no token is available, the request is blocked. It sets the HTTP status to **429 Too Many Requests** and writes a JSON-formatted `ApiError` to the response body using the `objectMapper`.
         
@@ -61,17 +55,16 @@ This method is executed for every incoming request that passes the `shouldNotFil
 
 This is an inner class that implements the **Token Bucket Algorithm**, which models resource consumption over time.
 
-|**Method**|**Role**|**Mechanism**|
-|---|---|---|
-|**`refill()`**|**Refill Tokens**|Calculates how many tokens should have been added since the `lastRefill` time. The tokens are added based on the elapsed time relative to the `refillWindowMs`. The token count is capped at `capacity`.|
-|**`tryConsume(int amount)`**|**Consume Tokens**|**1.** Calls `refill()` to update the current token count. **2.** Checks if `tokens >= amount` (typically 1). **3.** If sufficient tokens exist, it deducts them and returns `true`. **4.** It is `synchronized` to ensure thread safety, as multiple requests from the same IP can arrive simultaneously.|
-|**State Variables**|N/A|`tokens` (current available requests), `lastRefill` (timestamp of the last refill operation).|
-
+| **Method**                   | **Role**           | **Mechanism**                                                                                                                                                                                                                                                                                              |
+| ---------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`refill()`**               | **Refill Tokens**  | Calculates how many tokens should have been added since the `lastRefill` time. The tokens are added based on the elapsed time relative to the `refillWindowMs`. The token count is capped at `capacity`.                                                                                                   |
+| **`tryConsume(int amount)`** | **Consume Tokens** | **1.** Calls `refill()` to update the current token count. **2.** Checks if `tokens >= amount` (typically 1). **3.** If sufficient tokens exist, it deducts them and returns `true`. **4.** It is `synchronized` to ensure thread safety, as multiple requests from the same IP can arrive simultaneously. |
+| **State Variables**          | N/A                | `tokens` (current available requests), `lastRefill` (timestamp of the last refill operation).                                                                                                                                                                                                              |
+- [[how could elapsed be less than 0]]
+- The [[synchronized]] keyword in `tryConsume(int amount)`
 ### 4. Bypass Logic
 
-Java
-
-```
+```java
 protected boolean shouldNotFilter(HttpServletRequest request) {
     return "OPTIONS".equalsIgnoreCase(request.getMethod());
 }

@@ -26,13 +26,14 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain nextFilter)
 			throws ServletException, IOException {
 		String ip = request.getRemoteAddr();
 		SimpleBucket bucket = cache.computeIfAbsent(ip, this::createBucket);
 		if (bucket.tryConsume(1)) {
-			filterChain.doFilter(request, response);
+			nextFilter.doFilter(request, response);
 		} else {
+			response.setHeader("X-RateLimit-Limit", String.valueOf(CAPACITY));
 			response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
 			response.setContentType("application/json");
 			ApiError error = new ApiError(HttpStatus.TOO_MANY_REQUESTS.value(), "Too Many Requests",

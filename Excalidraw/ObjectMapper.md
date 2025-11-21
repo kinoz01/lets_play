@@ -28,9 +28,8 @@ In your `RateLimitingFilter`, the `ObjectMapper` is used specifically for **seri
 
 1. **The Java Object is Created:**
     
-    Java
     
-    ```
+    ```java
     ApiError error = new ApiError(
         HttpStatus.TOO_MANY_REQUESTS.value(), 
         "Too Many Requests",
@@ -41,11 +40,9 @@ In your `RateLimitingFilter`, the `ObjectMapper` is used specifically for **seri
     
     You create a structured Java object (`error`) containing all the details about the failure (status code, message, path, etc.).
     
-2. **Serialization Occurs:**
+1. **Serialization Occurs:**
     
-    Java
-    
-    ```
+    ```java
     response.getWriter().write(objectMapper.writeValueAsString(error));
     ```
     
@@ -55,7 +52,7 @@ In your `RateLimitingFilter`, the `ObjectMapper` is used specifically for **seri
         
     - It then converts this structure into a single, standard **JSON text string**.
         
-3. The JSON is Sent:
+2. The JSON is Sent:
     
     The resulting JSON string (the text) is written directly to the HTTP response body and sent back to the client (e.g., a web browser or a mobile app).
     
@@ -72,9 +69,7 @@ If your `ApiError` object looked like this in Java memory:
 
 The `ObjectMapper` converts it into this final JSON text string, which is what the client receives:
 
-JSON
-
-```
+```json
 {
   "status": 429,
   "message": "Too Many Requests",

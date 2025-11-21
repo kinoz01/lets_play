@@ -1,0 +1,43 @@
+# fly.toml app configuration file generated for lets-play-spring on 2025-11-21T08:06:55+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'lets-play-spring'
+primary_region = 'iad'
+
+[build]
+  dockerfile = 'dockerfile'
+
+[env]
+  SERVER_PORT = '8080'
+  SERVER_SSL_ENABLED = 'false'
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 8080
+  auto_stop_machines = 'off'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+  [[services.ports]]
+    port = 80
+    handlers = ['http']
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
+
+  [[services.http_checks]]
+    interval = '15s'
+    timeout = '5s'
+    grace_period = '20s'
+    method = 'GET'
+    path = '/actuator/health'
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

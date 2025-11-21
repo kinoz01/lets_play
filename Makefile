@@ -1,28 +1,51 @@
-.PHONY: help run build test functional security mongo-up mongo-down stop
+HTTPS_PROPS=src/main/resources/application.properties
+KEYSTORE_FILE=keystore.p12
+KEYSTORE_PASS?=changeit
+KEY_ALIAS?=letsplay-local
+HTTPS_PORT?=8888
 
 help:
 	@echo "Available targets:"
 	@echo "  make run         - starts MongoDB (via Docker) and the API"
 	@echo "  make build       - compiles and packages the project"
-	@echo "  make test        - runs the Maven test suite"
-	@echo "  make functional  - executes scripted functional smoke tests (server must be running)"
-	@echo "  make security    - runs the static security checklist"
-	@echo "  make stop        - stops the Spring Boot app (CTRL+C) and dockerized MongoDB"
+	@echo "  make stop        - stops the Spring Boot app and dockerized MongoDB"
 
 run: mongo-up
 	./mvnw spring-boot:run 
 
+stop: mongo-down
+
 build:
 	./mvnw clean package
 
-test:
-	./mvnw test
-
-functional:
-	./scripts/functional.sh
-
-security:
-	./scripts/security.sh
+https:
+	@set -e; \
+	if [ ! -f "$(KEYSTORE_FILE)" ]; then \
+		echo "Generating PKCS12 keystore $(KEYSTORE_FILE)..."; \
+		keytool -genkeypair \
+			-alias $(KEY_ALIAS) \
+			-keyalg RSA \
+			-keysize 2048 \
+			-storetype PKCS12 \
+			-keystore $(KEYSTORE_FILE) \
+			-validity 365 \
+			-storepass $(KEYSTORE_PASS) \
+			-dname "CN=localhost, OU=LetsPlay, O=LetsPlay, L=Local, S=Local, C=US"; \
+	else \
+		echo "$(KEYSTORE_FILE) already exists; skipping keytool."; \
+	fi; \
+	if ! grep -q "server\.ssl\.key-store=$(KEYSTORE_FILE)" "$(HTTPS_PROPS)"; then \
+		echo "Appending HTTPS configuration to $(HTTPS_PROPS)..."; \
+		printf "\n# Local HTTPS configuration\n" >> "$(HTTPS_PROPS)"; \
+		printf "server.port=%s\n" "$(HTTPS_PORT)" >> "$(HTTPS_PROPS)"; \
+		printf "server.ssl.enabled=true\n" >> "$(HTTPS_PROPS)"; \
+		printf "server.ssl.key-store=%s\n" "$(KEYSTORE_FILE)" >> "$(HTTPS_PROPS)"; \
+		printf "server.ssl.key-store-password=%s\n" "$(KEYSTORE_PASS)" >> "$(HTTPS_PROPS)"; \
+		printf "server.ssl.key-store-type=PKCS12\n" >> "$(HTTPS_PROPS)"; \
+		printf "server.ssl.key-alias=%s\n" "$(KEY_ALIAS)" >> "$(HTTPS_PROPS)"; \
+	else \
+		echo "HTTPS configuration already present in $(HTTPS_PROPS)."; \
+	fi
 
 mongo-up:
 	@$(MAKE) _mongo-up
@@ -30,7 +53,6 @@ mongo-up:
 mongo-down:
 	@$(MAKE) _mongo-down
 
-stop: mongo-down
 
 _mongo-up:
 	@set -e; \

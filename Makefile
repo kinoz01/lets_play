@@ -9,6 +9,7 @@ help:
 	@echo "  make run         - starts MongoDB (via Docker) and the API"
 	@echo "  make build       - compiles and packages the project"
 	@echo "  make stop        - stops the Spring Boot app and dockerized MongoDB"
+	@echo "  make fly-mongo   - provisions a dedicated Mongo Fly app + secret"
 
 run: mongo-up
 	./mvnw spring-boot:run 
@@ -17,6 +18,9 @@ stop: mongo-down
 
 build:
 	./mvnw clean package
+
+fly-mongo:
+	./scripts/fly-mongo.sh
 
 https:
 	@set -e; \

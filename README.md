@@ -5,7 +5,7 @@ Lets Play API is a basic Spring Boot + MongoDB CRUD API that use JWT authenticat
 ## Overview
 
 - **Security**: Stateless JWT authentication, rate limiting via a custom filter, and `@EnableMethodSecurity` guards on controllers.
-- **Data layer**: MongoDB collections for users and products, with seeded admin credentials (`admin@letsplay.dev / Admin123!`) to bootstrap access.
+- **Data layer**: MongoDB collections for users and products, with seeded admin credentials to bootstrap access.
 - **Tooling**: Makefile targets orchestrate local development workflows, generate HTTPS keystores, and provision supporting infrastructure on Fly.io. An interactive curl script (`scripts/test.sh`) exercises the API end to end.
 
 ## Prerequisites

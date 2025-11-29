@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,7 @@ public class UserService {
 		return userRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
 	}
 
+	@PostAuthorize("hasRole('ADMIN') or (returnObject != null && returnObject.email == authentication.name)")
 	public UserResponse getUserById(String id) {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));

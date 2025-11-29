@@ -399,6 +399,26 @@ me_as_admin
 
 text "=== PRODUCT ENDPOINT TESTS ==="
 
+# Seed a few products so the first GET requests have data to return
+if [[ -n "$USER_TOKEN" && "$USER_TOKEN" != "null" ]]; then
+	text "Pre-seed products via POST /api/products before running GET tests"
+	declare -a SEED_PRODUCTS=(
+		'{"name":"Seed Product One","description":"Seeded product created for GET tests","price":12.34}'
+		'{"name":"Seed Product Two","description":"Another seeded product for GET tests","price":23.45}'
+	)
+	for payload in "${SEED_PRODUCTS[@]}"; do
+		run_curl -X POST "${BASE_URL}/api/products" \
+			-H "Content-Type: application/json" \
+			-H "Authorization: Bearer ${USER_TOKEN}" \
+			-d "${payload}" \
+			-D - -o response.json | colorize_pattern
+		show_response
+		wait_for_key
+	done
+else
+	orangetext "USER_TOKEN missing, skipping product pre-seed before GET tests."
+fi
+
 # Public GET all products
 run_test "Test 11 GET /api/products (public)" \
 	-X GET "${BASE_URL}/api/products"

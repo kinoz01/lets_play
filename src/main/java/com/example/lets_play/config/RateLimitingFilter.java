@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,6 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+// Extends OncePerRequestFilter to ensure a single execution per request
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
 
@@ -23,15 +25,18 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 	private static final long REFILL_WINDOW_MS = 60_000;
 
 	private final Map<String, SimpleBucket> cache = new ConcurrentHashMap<>();
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	@Autowired
+    private ObjectMapper objectMapper;
 
+	// Extends OncePerRequestFilter's doFilterInternal method that will be called in OncePerRequestFilter's doFilter() method
+	// Tomcat → doFilter(...) (from OncePerRequestFilter) → our doFilterInternal(...)
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain nextFilter)
 			throws ServletException, IOException {
 		String ip = request.getRemoteAddr();
 		SimpleBucket bucket = cache.computeIfAbsent(ip, this::createBucket);
 		if (bucket.tryConsume(1)) {
-			nextFilter.doFilter(request, response);
+			nextFilter.doFilter(request, response); // Calls the next filter in the chain or the target resource
 		} else {
 			response.setHeader("X-RateLimit-Limit", String.valueOf(CAPACITY));
 			response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());

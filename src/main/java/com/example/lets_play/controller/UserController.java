@@ -3,12 +3,12 @@ package com.example.lets_play.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.lets_play.dto.UserRequest;
 import com.example.lets_play.dto.UserResponse;
 import com.example.lets_play.dto.UserUpdateRequest;
-import com.example.lets_play.exception.UnauthorizedException;
 import com.example.lets_play.model.User;
 import com.example.lets_play.service.UserService;
 
@@ -41,7 +40,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{id}")
-	@PostAuthorize("hasRole('ADMIN') or returnObject.body != null and returnObject.body.id == principal.id")
+	@PreAuthorize("hasRole('ADMIN') or (isAuthenticated() and #id == principal.id)")
 	public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
 		return ResponseEntity.ok(userService.getUserById(id));
 	}
@@ -53,12 +52,16 @@ public class UserController {
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN') or #id == principal.id")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<UserResponse> updateUser(@PathVariable String id, @Valid @RequestBody UserUpdateRequest request,
 			@AuthenticationPrincipal User currentUser) {
-		if (currentUser == null) {
-			throw new UnauthorizedException("Authentication required");
-		}
+		return ResponseEntity.ok(userService.updateUser(id, request, currentUser));
+	}
+
+	@PatchMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<UserResponse> partiallyUpdateUser(@PathVariable String id,
+			@RequestBody UserUpdateRequest request, @AuthenticationPrincipal User currentUser) {
 		return ResponseEntity.ok(userService.updateUser(id, request, currentUser));
 	}
 

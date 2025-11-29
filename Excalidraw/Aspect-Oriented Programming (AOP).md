@@ -4,7 +4,7 @@ Imagine you have many different classes and methods in your application, like a 
 
 If you put the logging code directly into every single method, your core business logic (like creating a user or processing an order) gets cluttered with repetitive, unrelated code. This makes the code harder to read, maintain, and change.
 
-AOP solves this by letting you define these repetitive tasks, called **cross-cutting concerns** (because they "cut across" many different parts of your application), in a separate, reusable module called an **Aspect**.
+AOP solves this by letting you define these repetitive tasks, called **cross-cutting concerns** (because they "cut across" many different parts of your application), in a separate, reusable module called an **[[Aspect]]**.
 
 Spring AOP is the Spring Framework's way of implementing AOP, primarily using **runtime proxies** (fancy wrappers around your objects) to inject this extra behavior without modifying your original code.
 

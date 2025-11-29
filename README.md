@@ -1,94 +1,235 @@
 # Lets Play API
 
-Spring Boot + MongoDB REST API that implements secure CRUD endpoints for users and products. It exposes JWT-based authentication, role-based authorization, validation, centralized error handling, CORS, and rate limiting so auditors can exercise the full checklist described in the subject.
+Lets Play API is a basic Spring Boot + MongoDB CRUD API that use JWT authentication, request throttling, method-level authorization, and centralized error handling. The service can be run locally or accessed through the hosted instance at **https://lets-play-spring.fly.dev**.
+
+## Overview
+
+- **Security**: Stateless JWT authentication, rate limiting via a custom filter, and `@EnableMethodSecurity` guards on controllers.
+- **Data layer**: MongoDB collections for users and products, with seeded admin credentials (`admin@letsplay.dev / Admin123!`) to bootstrap access.
+- **Tooling**: Makefile targets orchestrate local development workflows, generate HTTPS keystores, and provision supporting infrastructure on Fly.io. An interactive curl script (`scripts/test.sh`) exercises the API end to end.
 
 ## Prerequisites
 
-- Java 17
+- Java 17 or newer
 - Maven 3.9+
-- MongoDB (local or remote). Update `MONGODB_URI` if you aren't using the default `mongodb://localhost:27017/letsplay`.
+- docker or docker-compose (for MongoDB container)
+- Docker Daemon running
 
-## Configuration
+## Local Setup
 
-Use environment variables (or set them in `application.properties`) when running the app:
+Before running locally, set the required environment variables (manually or via `make secrets` followed by sourcing `.env.local`):
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `MONGODB_URI` | `mongodb://localhost:27017/letsplay` | Mongo connection string |
-| `JWT_SECRET` | Base64 secret from `application.properties` | Base64-encoded HMAC key |
-| `JWT_EXPIRATION` | `3600000` | Token lifetime (ms) |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | `admin@letsplay.dev` / `Admin123!` | Seed admin credentials |
-| `SERVER_SSL_ENABLED` | `false` | Set to `true` (plus keystore properties) to force HTTPS in production |
+- `JWT_SECRET` – Base64-encoded signing key (e.g., `openssl rand -base64 48`)
+- `ADMIN_EMAIL` – Seed administrator email address
+- `ADMIN_PASSWORD` – Seed administrator password
 
-## Running & Testing
+Then:
 
-```bash
-make run          # starts MongoDB via Docker Compose and boots the Spring app
-make test         # runs the Maven test suite
-make functional   # smoke-tests CRUD/auth flows (requires the API to be running)
-make security     # static security checklist (hashing, CORS, rate limit, HTTPS toggle, etc.)
-make stop         # stops the Spring app (Ctrl+C) and the MongoDB container
-make fly-mongo    # provisions a dedicated MongoDB Fly app (volume + machine) and updates the API secret
+1. Build the project: `./mvnw clean package`
+2. Start MongoDB and the API: `make run`
+3. Verify readiness: `curl http://localhost:8080/actuator/health`
+
+### HTTPS locally
+
+Run `make https` to:
+
+1. Generate `keystore.p12`
+2. Append SSL settings to `src/main/resources/application.properties`
+3. Serve the API on `https://localhost:8443`
+
+If you rely on Postman or similar tools, don't forget to import the generated certificate via settings. Example for Thunder Client:
+
+```json
+"thunder-client.certificates": [
+  {
+    "name": "LetsPlay Keystore",
+    "pfxPath": "${workspaceFolder}/keystore.p12",
+    "passphrase": "your-keystore-password",
+    "hosts": [
+      "https://localhost:8443"
+    ]
+  }
+]
 ```
 
-`make run` expects a working Docker installation. If you already have MongoDB running elsewhere, skip the target and start the app manually with `MONGODB_URI=<your-uri> ./mvnw spring-boot:run`.
+## API Summary
 
-The seeded admin user (`ADMIN_EMAIL` / `ADMIN_PASSWORD`) can be used to manage users and products. Regular users register via `POST /api/auth/register` and authenticate via `POST /api/auth/login`.
+### Authentication
 
-## API Overview
+- `POST /api/auth/register` – Create a user and receive a JWT in the response.
+- `POST /api/auth/login` – Exchange email & password for a JWT.
+- `GET /api/auth/me` – Retrieve the authenticated profile information (email, name, etc...).
 
-- `POST /api/auth/register` *(public)*: register and receive a JWT.
-- `POST /api/auth/login` *(public)*: obtain a JWT with email/password.
-- `GET /api/auth/me`: returns the authenticated profile.
-- `GET /api/products` *(public / @PermitAll)*: list all products.
-- `GET /api/products/{id}` *(public)*, `POST /api/products`, `PUT /api/products/{id}`, `DELETE /api/products/{id}`: CRUD with owner/admin guard rails.
-- `GET /api/users` *(admin)*, `GET /api/users/{id}` *(admin or owner via @PostAuthorize)*, `POST /api/users` *(admin)*, `PUT /api/users/{id}` *(admin or owner)*, `DELETE /api/users/{id}` *(admin)*.
+### Products
 
-All inputs are validated with Jakarta Bean Validation annotations. Passwords are hashed with BCrypt before being persisted. Controllers only return DTOs that omit sensitive fields.
+- `GET /api/products` and `GET /api/products/{id}` – Public read access.
+- `POST /api/products` – Requires a valid token; the new product is tied to the caller.
+- `PUT`/`PATCH /api/products/{id}` – Owners can modify their products; admins can modify any product.
+- `DELETE /api/products/{id}` – Owners and admins can remove products.
+- `GET /api/products/me` – List products owned by the caller.
 
-## Security Measures
+### Users
 
-- JWT + Spring Security with `@EnableWebSecurity` and `@EnableMethodSecurity`.
-- `@PreAuthorize`, `@PostAuthorize`, and `@PermitAll` guard every endpoint.
-- BCrypt-hashed & salted passwords plus seeded admin account.
-- Rate limiting (`RateLimitingFilter`) defends against brute force.
-- CORS is restricted via `CorsConfigurationSource`.
-- Validation rules on entities/DTOs mitigate Mongo injection attempts.
-- Sensitive data (passwords) never leaves the server.
-- HTTPS ready: set `SERVER_SSL_ENABLED=true` and provide keystore properties when deploying.
+- `GET /api/users` – Admin only.
+- `GET /api/users/{id}` – Admin or self.
+- `POST /api/users` – Admin can create additional users.
+- `PUT`/`PATCH /api/users/{id}` – Admin only; self-updates are disabled.
+- `DELETE /api/users/{id}` – Admin only can delete users.
 
-## Error Handling
+## Request payload examples
 
-`GlobalExceptionHandler` converts all exceptions (validation errors, missing resources, forbidden actions, etc.) into structured JSON payloads so the API never returns uncaught 5xx errors. Use `make functional` to verify the required scenarios end-to-end.
+Below are sample JSON bodies for endpoints that require input data. Adjust values as needed.
 
-## Deploying on Fly.io
+### Authentication
 
-Fly now uses **two separate apps**:
+`POST /api/auth/register` (public)
 
-- `lets-play-spring` (or whatever `fly.toml` declares) for the Spring Boot API
-- `lets-play-spring-mongo` (default) for a dedicated MongoDB machine
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "password": "Password123!"
+}
+```
 
-1. `fly auth login` (if you aren't already authenticated) and make sure `fly.toml` describes the API app you intend to deploy.
-2. Provision the Mongo app via the helper script:
-   ```bash
-   make fly-mongo
-   # or with overrides
-   FLY_MONGO_APP=my-db-app \
-   FLY_MONGO_REGION=dfw \
-   MONGO_VOLUME_SIZE=10 \
-   FLY_ORG=my-org \
-   make fly-mongo
-   ```
-   The script (`scripts/fly-mongo.sh`) will:
-   - create the Mongo Fly app (unless it already exists) using `fly apps create`,
-   - create/reuse the volume (`mongo_data` by default) in the requested region,
-   - launch a `mongo:7` machine attached to that volume (default command `mongod --bind_ip_all --ipv6 ...` so it listens on Fly’s private network),
-   - capture the Mongo app’s private Fly network IP, and
-   - set `MONGODB_URI` as a secret on the API app so Spring talks to that private address.
-   Tunable env vars include `FLY_API_APP`, `FLY_MONGO_APP`, `FLY_MONGO_REGION`, `MONGO_VOLUME_NAME`, `MONGO_VOLUME_SIZE`, `MONGO_MACHINE_NAME`, `MONGO_VM_SIZE`, `MONGO_DB_NAME`, `MONGO_PORT`, `MONGO_COMMAND`, and `MONGO_SECRET_NAME`. Set `MONGO_FORCE_RECREATE=true` if you want the script to destroy and recreate the Mongo machine (useful after changing command/size) and set `FLY_ORG` if your account spans multiple organizations.
-3. Deploy (or redeploy) the API so it picks up the updated secret:
-   ```bash
-   fly deploy
-   ```
+`POST /api/auth/login` (public)
 
-The Mongo app only exposes a private IPv6 address inside Fly’s network, so nothing is reachable from the public internet. If you need authenticated Mongo, extend `scripts/fly-mongo.sh` to pass `MONGO_INITDB_ROOT_USERNAME` / `MONGO_INITDB_ROOT_PASSWORD` (or similar) to the `fly machines run` command, and update the URI formatting before rerunning `make fly-mongo`.
+```json
+{
+  "email": "jane@example.com",
+  "password": "Password123!"
+}
+```
+
+### Products
+
+`POST /api/products` *(bearer token from user or admin)*
+
+Example header: `Authorization: Bearer {{user_token}}`
+
+```json
+{
+  "name": "Acoustic Guitar",
+  "description": "Solid spruce top with mahogany back.",
+  "price": 299.99,
+  "stock": 5
+}
+```
+
+`PUT /api/products/{id}` *(bearer token from owner or admin)*
+
+Example header: `Authorization: Bearer {{user_token}}`
+
+```json
+{
+  "name": "Acoustic Guitar Pro",
+  "description": "Upgraded tuners and hardshell case.",
+  "price": 349.99,
+  "stock": 7
+}
+```
+
+`PATCH /api/products/{id}` *(bearer token from owner or admin)*
+
+Example header: `Authorization: Bearer {{admin_token}}`
+
+```json
+{
+  "price": 279.99,
+  "stock": 10
+}
+```
+
+### Users (admin-only)
+
+`POST /api/users` *(bearer token from admin)*
+
+Example header: `Authorization: Bearer {{admin_token}}`
+
+```json
+{
+  "name": "Managed User",
+  "email": "managed@example.com",
+  "password": "Managed123!",
+  "role": "USER"
+}
+```
+
+`PUT /api/users/{id}` *(bearer token from admin)*
+
+Example header: `Authorization: Bearer {{admin_token}}`
+
+```json
+{
+  "name": "Managed User Updated",
+  "email": "managed.updated@example.com",
+  "role": "ADMIN"
+}
+```
+
+`PATCH /api/users/{id}` *(bearer token from admin)*
+
+Example header: `Authorization: Bearer {{admin_token}}`
+
+```json
+{
+ "name": "Managed User Patched",
+ "password": "NewPassword!1"
+}
+```
+
+## Make Targets
+
+| Target | Purpose |
+| --- | --- |
+| `make run` | Launch MongoDB (docker-compose) and run the API via `spring-boot:run`. |
+| `make stop` | Stop the Mongo container. |
+| `make build` | Run the Maven build. |
+| `make test` | Execute the interactive curl test suite (`scripts/test.sh`). |
+| `make fly-mongo` | Provision a MongoDB machine on Fly.io and update secrets for the API app. |
+| `make secrets` | Generate `.env.local` with `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` values (uses `openssl rand` for the JWT secret). |
+| `make https` | Generate a PKCS12 keystore and append SSL configuration. |
+| `make help` | Display a summary of available targets. |
+
+Variables such as `KEYSTORE_PASS`, `FLY_MONGO_REGION`, or `MONGO_VOLUME_SIZE` can be overridden per invocation, e.g., `KEYSTORE_PASS=my-pass make https`.
+
+After running `make secrets`, load the environment variables with:
+
+```bash
+set -a; . ./.env.local; set +a
+```
+
+This exports `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` so Spring picks them up via `app.jwt.secret`, `app.admin.email`, and `app.admin.password`.
+
+## Testing Workflow
+
+`scripts/test.sh` issues a curated sequence of curl requests, writes responses to `response.json`, colorizes status lines, and prints each command so it can be re-run manually. The script pauses between tests, allowing time to inspect the results or copy commands into another terminal.
+
+## Deployment
+
+- Production URL: **https://lets-play-spring.fly.dev**
+- `make fly-mongo` provisions a companion MongoDB app (default: `lets-play-spring-mongo`) on Fly.io and stores the resulting `MONGODB_URI` as a secret on the API app.
+- Deployments are performed with `fly deploy`. Before deploying, set secrets on Fly with:
+
+  ```bash
+  fly secrets set \
+    JWT_SECRET="your-generated-secret" \
+    ADMIN_EMAIL="admin@letsplay.dev" \
+    ADMIN_PASSWORD="Admin123!"
+  ```
+
+## Additional Notes
+
+- Controllers expose DTOs only; passwords never appear in responses.
+- Rate limiting returns structured `ApiError` responses consistent with the rest of the API.
+- `GlobalExceptionHandler` produces uniform JSON for validation errors, access violations, and missing resources.
+
+## References
+
+- [Apache Maven Guides](https://maven.apache.org/guides/index.html)
+- [Spring Boot Maven Plugin](https://docs.spring.io/spring-boot/3.5.7/maven-plugin)
+- [Spring Web Reference](https://docs.spring.io/spring-boot/3.5.7/reference/web/servlet.html)
+- [Spring Security Reference](https://docs.spring.io/spring-boot/3.5.7/reference/web/spring-security.html)
+- [Spring Data MongoDB](https://docs.spring.io/spring-boot/3.5.7/reference/data/nosql.html#data.nosql.mongodb)
+- [Spring Boot Actuator](https://docs.spring.io/spring-boot/3.5.7/reference/actuator/index.html)
+- [Spring Guides](https://spring.io/guides/) (REST, MVC, Security, MongoDB, Actuator)

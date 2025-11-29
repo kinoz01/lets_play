@@ -9,7 +9,7 @@ import com.example.lets_play.model.Role;
 import com.example.lets_play.model.User;
 import com.example.lets_play.repository.UserRepository;
 
-@Component
+@Component // Marks this class as a Spring-managed component, which means it will be detected during component scanning and instantiated as a bean
 public class DataInitializer implements CommandLineRunner {
 
 	private final UserRepository userRepository;
@@ -17,6 +17,8 @@ public class DataInitializer implements CommandLineRunner {
 	private final String adminEmail;
 	private final String adminPassword;
 
+	// Instantiated during application startup, DIng the UserRepository and PasswordEncoder
+	// UserRespostory is an instance of a proxy class that Spring Data MongoDB creates and inject at runtime
 	public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder,
 			@Value("${app.admin.email:admin@letsplay.dev}") String adminEmail,
 			@Value("${app.admin.password:Admin123!}") String adminPassword) {
@@ -26,6 +28,8 @@ public class DataInitializer implements CommandLineRunner {
 		this.adminPassword = adminPassword;
 	}
 
+	// Called after the application context is loaded and right before the Spring Application run method is completed
+	// Used to seed the database with initial data
 	@Override
 	public void run(String... args) {
 		if (!userRepository.existsByEmail(adminEmail)) {

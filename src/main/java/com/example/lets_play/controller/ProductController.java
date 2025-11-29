@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.lets_play.dto.ProductRequest;
 import com.example.lets_play.dto.ProductResponse;
 import com.example.lets_play.dto.ProductUpdateRequest;
-import com.example.lets_play.exception.UnauthorizedException;
 import com.example.lets_play.model.User;
 import com.example.lets_play.service.ProductService;
 
@@ -49,9 +49,6 @@ public class ProductController {
 	@GetMapping("/me")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<List<ProductResponse>> getMyProducts(@AuthenticationPrincipal User currentUser) {
-		if (currentUser == null) {
-			throw new UnauthorizedException("Authentication required");
-		}
 		return ResponseEntity.ok(productService.getProductsForUser(currentUser.getId()));
 	}
 
@@ -59,9 +56,6 @@ public class ProductController {
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request,
 			@AuthenticationPrincipal User currentUser) {
-		if (currentUser == null) {
-			throw new UnauthorizedException("Authentication required");
-		}
 		return ResponseEntity.ok(productService.createProduct(request, currentUser));
 	}
 
@@ -69,18 +63,19 @@ public class ProductController {
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	public ResponseEntity<ProductResponse> updateProduct(@PathVariable String id,
 			@Valid @RequestBody ProductUpdateRequest request, @AuthenticationPrincipal User currentUser) {
-		if (currentUser == null) {
-			throw new UnauthorizedException("Authentication required");
-		}
+		return ResponseEntity.ok(productService.updateProduct(id, request, currentUser));
+	}
+
+	@PatchMapping("/{id}")
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
+	public ResponseEntity<ProductResponse> partiallyUpdateProduct(@PathVariable String id,
+			@RequestBody ProductUpdateRequest request, @AuthenticationPrincipal User currentUser) {
 		return ResponseEntity.ok(productService.updateProduct(id, request, currentUser));
 	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	public ResponseEntity<Void> deleteProduct(@PathVariable String id, @AuthenticationPrincipal User currentUser) {
-		if (currentUser == null) {
-			throw new UnauthorizedException("Authentication required");
-		}
 		productService.deleteProduct(id, currentUser);
 		return ResponseEntity.noContent().build();
 	}

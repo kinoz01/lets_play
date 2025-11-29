@@ -60,14 +60,12 @@ public class UserService {
 		if (requester == null) {
 			throw new UnauthorizedException("Authentication required");
 		}
+		boolean isAdmin = requester.getRole() == Role.ADMIN;
+		if (!isAdmin) {
+			throw new ForbiddenException("Only administrators can update users");
+		}
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-		boolean isAdmin = requester.getRole() == Role.ADMIN;
-		boolean isOwner = user.getId().equals(requester.getId());
-
-		if (!isAdmin && !isOwner) {
-			throw new ForbiddenException("You are not allowed to update this user");
-		}
 
 		if (request.getName() != null) {
 			user.setName(request.getName());

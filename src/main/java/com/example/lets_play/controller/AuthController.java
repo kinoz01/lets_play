@@ -23,7 +23,7 @@ public class AuthController {
 
 	private final AuthService authService;
 
-	public AuthController(AuthService authService) {
+	public AuthController(AuthService authService) { // Constructor injection
 		this.authService = authService;
 	}
 

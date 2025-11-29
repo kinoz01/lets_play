@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-
+# Used to set up a MongoDB instance on Fly.io using Fly Machines,
+# and configure the specified API app to connect to it via a secret.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

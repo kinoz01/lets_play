@@ -49,7 +49,7 @@ This method is executed for every incoming request that passes the `shouldNotFil
     - **Success:** If a token is consumed, the request is allowed to pass down the [[filter chain]] to the controller (`filterChain.doFilter`).
         
     - **Failure:** If no token is available, the request is blocked. It sets the HTTP status to **429 Too Many Requests** and writes a JSON-formatted `ApiError` to the response body using the `objectMapper`.
-        
+---> [[How doFilter is related to the SecurityFilterChain and FilterChain]]
 
 ### 3. The Token Bucket Algorithm: `SimpleBucket` Class
 
@@ -70,7 +70,7 @@ protected boolean shouldNotFilter(HttpServletRequest request) {
 }
 ```
 
-This is a standard requirement for web filters. It prevents the filter from running for **CORS preflight (OPTIONS)** requests, ensuring those essential network checks are never rate-limited.
+This is a standard requirement for web filters. It prevents the filter from running for **[[CORS]] preflight ([[OPTIONS]])** requests, ensuring those essential network checks are never rate-limited.
 
 ---
 
@@ -87,3 +87,22 @@ The `RateLimitingFilter` is a **Servlet Filter** and is therefore integrated int
 | **14. Application listens for HTTP requests**  | **This is when the filter executes.** For every incoming HTTP request, the filter chain is processed, and the `doFilterInternal` method of the `RateLimitingFilter` runs **before** the request ever reaches the `DispatcherServlet` and your Controllers. |
 
 The filter acts as a **gatekeeper** at the very beginning of the request handling process.
+
+---
+
+> Note that you will need to add:
+
+```java
+private final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+```
+
+so the `ObjectMapper` would work correctly, this because we are creating our own instance of it. A better way is to just put:
+
+```java
+@Autowired
+    private ObjectMapper objectMapper;
+``` 
+
+so Spring will injected automatically for you with no need for optimal config manually.

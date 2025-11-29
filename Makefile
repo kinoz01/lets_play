@@ -2,16 +2,28 @@ HTTPS_PROPS=src/main/resources/application.properties
 KEYSTORE_FILE=keystore.p12
 KEYSTORE_PASS?=changeit
 KEY_ALIAS?=letsplay-local
-HTTPS_PORT?=8888
+HTTPS_PORT?=8443
+SECRETS_FILE?=.env.local
 
 help:
 	@echo "Available targets:"
-	@echo "  make run         - starts MongoDB (via Docker) and the API"
+	@echo "  make run         - load .env.local, starts MongoDB (via Docker) and the Spring API"
+	@echo "  make test        - run test scripts executing different API calls (use right arrow to go to next call)"
+	@echo "  make https       - create a self-signed SSL certificate and enable HTTPS in application.properties"
+	@echo "  make secrets     - generate .env.local with JWT secret and admin credentials"
 	@echo "  make build       - compiles and packages the project"
 	@echo "  make stop        - stops the Spring Boot app and dockerized MongoDB"
 	@echo "  make fly-mongo   - provisions a dedicated Mongo Fly app + secret"
 
 run: mongo-up
+	@set -a; \
+	if [ -f ".env.local" ]; then \
+		echo "Loading environment variables from .env.local"; \
+		. ./.env.local; \
+	else \
+		echo "No .env.local found; proceeding with existing environment, to generate automatically u might use the make secrets target"; \
+	fi; \
+	set +a; \
 	./mvnw spring-boot:run 
 
 stop: mongo-down
@@ -21,6 +33,22 @@ build:
 
 fly-mongo:
 	./scripts/fly-mongo.sh
+
+test:
+	./scripts/test.sh
+
+secrets:
+	@set -e; \
+	JWT_VALUE="$${JWT_SECRET_VALUE:-$$(openssl rand -base64 48)}"; \
+	ADMIN_EMAIL_VALUE="$${ADMIN_EMAIL_VALUE:-admin@letsplay.dev}"; \
+	ADMIN_PASSWORD_VALUE="$${ADMIN_PASSWORD_VALUE:-Admin123!}"; \
+	echo "Writing secrets to $(SECRETS_FILE)"; \
+	{ \
+		echo "JWT_SECRET=$$JWT_VALUE"; \
+		echo "ADMIN_EMAIL=$$ADMIN_EMAIL_VALUE"; \
+		echo "ADMIN_PASSWORD=$$ADMIN_PASSWORD_VALUE"; \
+	} > $(SECRETS_FILE); \
+	echo "Secrets saved. Load them with: \"set -a; . ./.env.local; set +a\" or use \"make run\" to load automatically."
 
 https:
 	@set -e; \
@@ -56,7 +84,6 @@ mongo-up:
 
 mongo-down:
 	@$(MAKE) _mongo-down
-
 
 _mongo-up:
 	@set -e; \

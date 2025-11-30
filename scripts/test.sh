@@ -97,13 +97,13 @@ print_curl_command() {
 			skip_next=0
 			continue
 		fi
-			if [[ "$arg" == "-o" ]]; then
-				skip_next=1
-				continue
-			fi
-			if [[ "$arg" == -o* ]]; then
-				continue
-			fi
+		if [[ "$arg" == "-o" ]]; then
+			skip_next=1
+			continue
+		fi
+		if [[ "$arg" == -o* ]]; then
+			continue
+		fi
 		filtered+=("$arg")
 	done
 
@@ -131,7 +131,7 @@ wait_for_key() {
 	done
 }
 
-# Colorize by HTTP status 
+# Colorize by HTTP status
 colorize_pattern() {
 	local headers status_line code color
 	headers="$(cat)" # read everything from stdin (headers from curl -D -)
@@ -400,11 +400,12 @@ me_as_admin
 text "=== PRODUCT ENDPOINT TESTS ==="
 
 # Seed a few products so the first GET requests have data to return
+declare -a SEED_PRODUCT_IDS=()
 if [[ -n "$USER_TOKEN" && "$USER_TOKEN" != "null" ]]; then
-	text "Pre-seed products via POST /api/products before running GET tests"
+	text "Pre-seed products via POST /api/products"
 	declare -a SEED_PRODUCTS=(
-		'{"name":"Seed Product One","description":"Seeded product created for GET tests","price":12.34}'
-		'{"name":"Seed Product Two","description":"Another seeded product for GET tests","price":23.45}'
+		'{"name":"Seed Product One","description":"Seeded product","price":12.34}'
+		'{"name":"Seed Product Two","description":"Another seeded product","price":23.45}'
 	)
 	for payload in "${SEED_PRODUCTS[@]}"; do
 		run_curl -X POST "${BASE_URL}/api/products" \
@@ -413,15 +414,38 @@ if [[ -n "$USER_TOKEN" && "$USER_TOKEN" != "null" ]]; then
 			-d "${payload}" \
 			-D - -o response.json | colorize_pattern
 		show_response
+
+		seed_id="$(jq -r '.id // empty' response.json)"
+		if [[ -n "$seed_id" && "$seed_id" != "null" ]]; then
+			SEED_PRODUCT_IDS+=("$seed_id")
+			greentext "Captured seeded product ID=${seed_id} for cleanup."
+		else
+			orangetext "Could not capture ID for seeded product payload."
+		fi
+
 		wait_for_key
 	done
 else
-	orangetext "USER_TOKEN missing, skipping product pre-seed before GET tests."
+	orangetext "USER_TOKEN missing, skipping product pre-seed."
 fi
 
 # Public GET all products
 run_test "Test 11 GET /api/products (public)" \
 	-X GET "${BASE_URL}/api/products"
+
+# Delete the seeded products to avoid polluting later tests
+if [[ ${#SEED_PRODUCT_IDS[@]} -gt 0 ]]; then
+	text "Cleanup seeded products via DELETE /api/products/{id}"
+	for product_id in "${SEED_PRODUCT_IDS[@]}"; do
+		run_curl -X DELETE "${BASE_URL}/api/products/${product_id}" \
+			-H "Authorization: Bearer ${USER_TOKEN}" \
+			-D - -o response.json | colorize_pattern
+		show_response
+		wait_for_key
+	done
+else
+	orangetext "No seeded product IDs captured, skipping seeded product cleanup."
+fi
 
 # Public GET product by invalid id
 run_test "Test 12 GET /api/products/{invalid} (public, expected 404)" \
@@ -476,29 +500,29 @@ if [[ -n "$PRODUCT_ID" && "$PRODUCT_ID" != "null" ]]; then
 fi
 
 # Partial update as USER (owner) [PATCH]
-	if [[ -n "$PRODUCT_ID" && "$PRODUCT_ID" != "null" ]]; then
-		run_test "Test 19 PATCH /api/products/{id} as USER (owner, authorized)" \
-			-X PATCH "${BASE_URL}/api/products/${PRODUCT_ID}" \
-			-H "Content-Type: application/json" \
-			-H "Authorization: Bearer ${USER_TOKEN}" \
-			-d '{"price":21.0}'
-	fi
+if [[ -n "$PRODUCT_ID" && "$PRODUCT_ID" != "null" ]]; then
+	run_test "Test 19 PATCH /api/products/{id} as USER (owner, authorized)" \
+		-X PATCH "${BASE_URL}/api/products/${PRODUCT_ID}" \
+		-H "Content-Type: application/json" \
+		-H "Authorization: Bearer ${USER_TOKEN}" \
+		-d '{"price":21.0}'
+fi
 
-	# Patch product as ADMIN (should be allowed even if not owner)
-	if [[ -n "$PRODUCT_ID" && "$PRODUCT_ID" != "null" ]]; then
-		run_test "Test 19.5 PATCH /api/products/{id} as ADMIN (allowed)" \
-			-X PATCH "${BASE_URL}/api/products/${PRODUCT_ID}" \
-			-H "Content-Type: application/json" \
-			-H "Authorization: Bearer ${ADMIN_TOKEN}" \
-			-d '{"price":23}'
-	fi
+# Patch product as ADMIN (should be allowed even if not owner)
+if [[ -n "$PRODUCT_ID" && "$PRODUCT_ID" != "null" ]]; then
+	run_test "Test 19.5 PATCH /api/products/{id} as ADMIN (allowed)" \
+		-X PATCH "${BASE_URL}/api/products/${PRODUCT_ID}" \
+		-H "Content-Type: application/json" \
+		-H "Authorization: Bearer ${ADMIN_TOKEN}" \
+		-d '{"price":23}'
+fi
 
-	# Delete product with second user's token (should be forbidden)
-	if [[ -n "$PRODUCT_ID" && "$PRODUCT_ID" != "null" && -n "$SECOND_USER_TOKEN" && "$SECOND_USER_TOKEN" != "null" ]]; then
-		run_test "Test 19.6 DELETE /api/products/{id} as OTHER USER (forbidden)" \
-			-X DELETE "${BASE_URL}/api/products/${PRODUCT_ID}" \
-			-H "Authorization: Bearer ${SECOND_USER_TOKEN}"
-	fi
+# Delete product with second user's token (should be forbidden)
+if [[ -n "$PRODUCT_ID" && "$PRODUCT_ID" != "null" && -n "$SECOND_USER_TOKEN" && "$SECOND_USER_TOKEN" != "null" ]]; then
+	run_test "Test 19.6 DELETE /api/products/{id} as OTHER USER (forbidden)" \
+		-X DELETE "${BASE_URL}/api/products/${PRODUCT_ID}" \
+		-H "Authorization: Bearer ${SECOND_USER_TOKEN}"
+fi
 
 # Delete product without token
 if [[ -n "$PRODUCT_ID" && "$PRODUCT_ID" != "null" ]]; then
@@ -526,7 +550,7 @@ fi
 
 text "=== USER ENDPOINT TESTS ==="
 
-# GET /api/users without token 
+# GET /api/users without token
 run_test "Test 23 GET /api/users without token (403)" \
 	-X GET "${BASE_URL}/api/users"
 
@@ -565,27 +589,27 @@ if [[ -n "$USER_CREATED_BY_ADMIN_ID" && "$USER_CREATED_BY_ADMIN_ID" != "null" ]]
 fi
 
 # GET user by id as USER (forbidden)
-	if [[ -n "$USER_CREATED_BY_ADMIN_ID" && "$USER_CREATED_BY_ADMIN_ID" != "null" ]]; then
-		run_test "Test 28 GET /api/users/{id} as USER (403)" \
-			-X GET "${BASE_URL}/api/users/${USER_CREATED_BY_ADMIN_ID}" \
-			-H "Authorization: Bearer ${USER_TOKEN}"
-	fi
+if [[ -n "$USER_CREATED_BY_ADMIN_ID" && "$USER_CREATED_BY_ADMIN_ID" != "null" ]]; then
+	run_test "Test 28 GET /api/users/{id} as USER (403)" \
+		-X GET "${BASE_URL}/api/users/${USER_CREATED_BY_ADMIN_ID}" \
+		-H "Authorization: Bearer ${USER_TOKEN}"
+fi
 
-	# Attempt to delete self as USER (sforbidden)
-	if [[ -n "$USER_ID" && "$USER_ID" != "null" ]]; then
-		run_test "Test 28.5 DELETE /api/users/{id} as USER (forbidden)" \
-			-X DELETE "${BASE_URL}/api/users/${USER_ID}" \
-			-H "Authorization: Bearer ${USER_TOKEN}"
-	fi
+# Attempt to delete self as USER (sforbidden)
+if [[ -n "$USER_ID" && "$USER_ID" != "null" ]]; then
+	run_test "Test 28.5 DELETE /api/users/{id} as USER (forbidden)" \
+		-X DELETE "${BASE_URL}/api/users/${USER_ID}" \
+		-H "Authorization: Bearer ${USER_TOKEN}"
+fi
 
 # Update self as USER (PUT /api/users/{USER_ID})
-	if [[ -n "$USER_ID" && "$USER_ID" != "null" ]]; then
-		run_test "Test 29 PUT /api/users/{id} as USER (forbidden)" \
-			-X PUT "${BASE_URL}/api/users/${USER_ID}" \
-			-H "Content-Type: application/json" \
-			-H "Authorization: Bearer ${USER_TOKEN}" \
-			-d '{"name":"User One Updated"}'
-	fi
+if [[ -n "$USER_ID" && "$USER_ID" != "null" ]]; then
+	run_test "Test 29 PUT /api/users/{id} as USER (forbidden)" \
+		-X PUT "${BASE_URL}/api/users/${USER_ID}" \
+		-H "Content-Type: application/json" \
+		-H "Authorization: Bearer ${USER_TOKEN}" \
+		-d '{"name":"User One Updated"}'
+fi
 
 # Update other user as USER (should be forbidden)
 if [[ -n "$USER_CREATED_BY_ADMIN_ID" && "$USER_CREATED_BY_ADMIN_ID" != "null" ]]; then
@@ -597,13 +621,13 @@ if [[ -n "$USER_CREATED_BY_ADMIN_ID" && "$USER_CREATED_BY_ADMIN_ID" != "null" ]]
 fi
 
 # Partial update (PATCH) self as USER
-	if [[ -n "$USER_ID" && "$USER_ID" != "null" ]]; then
-		run_test "Test 31 PATCH /api/users/{id} as USER (forbidden)" \
-			-X PATCH "${BASE_URL}/api/users/${USER_ID}" \
-			-H "Content-Type: application/json" \
-			-H "Authorization: Bearer ${USER_TOKEN}" \
-			-d '{"name":"User One Partially Updated"}'
-	fi
+if [[ -n "$USER_ID" && "$USER_ID" != "null" ]]; then
+	run_test "Test 31 PATCH /api/users/{id} as USER (forbidden)" \
+		-X PATCH "${BASE_URL}/api/users/${USER_ID}" \
+		-H "Content-Type: application/json" \
+		-H "Authorization: Bearer ${USER_TOKEN}" \
+		-d '{"name":"User One Partially Updated"}'
+fi
 
 # Delete user as ADMIN
 if [[ -n "$USER_CREATED_BY_ADMIN_ID" && "$USER_CREATED_BY_ADMIN_ID" != "null" ]]; then

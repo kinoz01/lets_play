@@ -16,7 +16,7 @@ Think of it as the **library index** for your Java program:
 
 ## 🔎 Classpath Detection Algorithm (Spring Boot)
 
-The **Classpath Detection Algorithm** is the clever mechanism used by **Spring Boot** to automatically configure and launch an application based on the libraries it finds on the classpath. This is the core of Spring Boot's "convention over configuration" principle.
+The **Classpath Detection Algorithm** is the clever mechanism used by **Spring Boot** to automatically configure and launch an application based on the libraries it finds on the classpath. This is the core of Spring Boot's "*convention over configuration*" principle.
 
 ### 1. What it is
 

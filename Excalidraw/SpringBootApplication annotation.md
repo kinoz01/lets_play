@@ -18,9 +18,9 @@ The `@SpringBootApplication` annotation is meta-annotated with, and therefore eq
   * **Mechanism:** It operates by reading **`META-INF/spring.factories`** files found within the dependencies, which list classes responsible for specific auto-configurations (e.g., `DataSourceAutoConfiguration`).
 
 Examples:
-- Finds WebMvcAutoConfiguration → loads DispatcherServlet
-- Finds MongoAutoConfiguration → loads MongoTemplate
-- Finds SecurityAutoConfiguration → loads filters  
+- Finds `WebMvcAutoConfiguration` → loads `DispatcherServlet`
+- Finds `MongoAutoConfiguration` → loads `MongoTemplate`
+- Finds `SecurityAutoConfiguration` → loads filters  
 	etc.
 
 ### 3\. **`@ComponentScan`** 🔍

@@ -1,6 +1,6 @@
 ## **Backend Framework Philosophy Categories**
 
-### **1. **Minimalist / Micro Frameworks**
+### **1.  Minimalist / Micro Frameworks**
 
 **Philosophy:** "Do one thing well, stay out of the way"
 
@@ -17,7 +17,7 @@
 
 ---
 
-### **2. **Batteries-Included / Full-Stack**
+### **2. Batteries-Included / Full-Stack**
 
 **Philosophy:** "Everything you need for production apps"
 
@@ -34,7 +34,7 @@
 
 ---
 
-### **3. **Reactive / Async-First**
+### **3. Reactive / Async-First**
 
 **Philosophy:** "Don't block, scale vertically"
 
@@ -50,7 +50,7 @@
 
 ---
 
-### **4. **Compile-Time / AOT-Focused**
+### **4. Compile-Time / AOT-Focused**
 
 **Philosophy:** "Fast startup, low memory, cloud-native**
 
@@ -66,7 +66,7 @@
 
 ---
 
-### **5. **Functional Programming**
+### **5. Functional Programming**
 
 **Philosophy:** "Pure functions, immutable data"
 
@@ -82,23 +82,23 @@
 
 ---
 
-### **6. **Meta-Frameworks / Fullstack**
+### **6. Meta-Frameworks / Fullstack**
 
 **Philosophy:** "Frontend + backend in one cohesive unit"
 
-|Language|Framework|Key Characteristics|
-|---|---|---|
-|**JavaScript**|Next.js, Nuxt|SSR, API routes, file-based routing|
-|**PHP**|Laravel Livewire|Full-stack reactive components|
-|**Python**|Django + HTMX|Server-rendered modern UIs|
-|**C#**|Blazor|C# full-stack, WebAssembly|
-|**Elixir**|Phoenix LiveView|Real-time, server-rendered SPAs|
+| Language       | Framework        | Key Characteristics                 |
+| -------------- | ---------------- | ----------------------------------- |
+| **JavaScript** | Next.js, Nuxt    | SSR, API routes, file-based routing |
+| **PHP**        | Laravel Livewire | Full-stack reactive components      |
+| **Python**     | Django + HTMX    | Server-rendered modern UIs          |
+| **C#**         | Blazor           | C# full-stack, WebAssembly          |
+| **Elixir**     | Phoenix LiveView | Real-time, server-rendered SPAs     |
 
 **Mindset:** "I want one framework for everything"
 
 ---
 
-### **7. **API-First / Headless**
+### **7. API-First / Headless**
 
 **Philosophy:** "Backend as service, frontend-agnostic"
 
@@ -186,22 +186,23 @@
 
 ## **Cross-Language Philosophy Map**
 
-text
-
-EXPLICIT CONTROL ←──────────────────────────→ MAGIC & CONVENTION
+```md
+EXPLICIT CONTROL <──────────────────────────> MAGIC & CONVENTION
 Python: Flask/FastAPI    Java: Spark/Javalin    Java: Spring Boot
 Node: Express            Go: Gin/Echo           Ruby: Rails
 Rust: Axum               Python: Django         PHP: Laravel
-                          C#: ASP.NET Core
+                        C#: ASP.NET Core
 
-PERFORMANCE FOCUSED ←──────────────────────→ DEVELOPER EXPERIENCE
+PERFORMANCE FOCUSED <──────────────────────> DEVELOPER EXPERIENCE
 Rust: Actix-web          Go: stdlib http        Ruby: Rails
 Java: Vert.x             Node: Fastify          Python: Django
 C#: ASP.NET Core AOT     Java: Quarkus          PHP: Laravel
 
-FUNCTIONAL PURITY ←─────────────────────────→ PRACTICALITY FIRST
-Haskell: Yesod           Scala: http4s          Java: Spring
-F#: Giraffe              JavaScript: Fastify    Python: Django
-                          TypeScript: NestJS
+FUNCTIONAL PURITY <─────────────────────────> PRACTICALITY FIRST
+Haskell: Yesod          Scala: http4s          Java: Spring
+F#: Giraffe             JavaScript: Fastify    Python: Django
+                        TypeScript: NestJS
+```
+
 
 **Key Insight:** Your choice should match both your team's philosophy and your application's requirements - not just follow language trends.

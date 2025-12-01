@@ -11,7 +11,7 @@ Standard Maven commands correspond to **lifecycle phases** (`compile`, `package`
 
 The single biggest reason is the **Classpath**. To run a Java application, the Java Virtual Machine (JVM) needs to know the exact location of **every single `.class` file and dependency JAR** required by your application.
 
-- A standard Maven phase like `mvn package` **creates** the application artifact (your JAR) and places it in the `target/` folder.2
+- A standard Maven phase like `mvn package` **creates** the application artifact (your JAR) and places it in the `target/` folder.
     
 - It **does not** automatically generate the lengthy string of file paths (the `-cp` argument) needed to tell the JVM where to find the hundreds of required Spring, Tomcat, and third-party dependency JARs.
     
@@ -19,7 +19,7 @@ The single biggest reason is the **Classpath**. To run a Java application, the J
     
 ### 2. Maven's Purpose is Build, Not Execution
 
-Maven's core responsibility, or its "goal" as a framework, is to manage the **Project Object Model (POM)** and orchestrate the build process according to the defined lifecycle.3 Launching a long-running, external process (like a web server) is outside its core design.
+Maven's core responsibility, or its "goal" as a framework, is to manage the **Project Object Model (POM)** and orchestrate the build process according to the defined lifecycle. Launching a long-running, external process (like a web server) is outside its core design.
 
 |**Task**|**Maven Core (Phases)**|**Requires a Plugin (Goals)**|
 |---|---|---|

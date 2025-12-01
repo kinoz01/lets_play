@@ -1,7 +1,6 @@
 
 ## 1\. Request Enters Tomcat (Servlet Container)
 
----
 
 Tomcat receives the request on port `8080`.  
 Tomcat looks at its servlet mappings and finds that the `DispatcherServlet` is mapped to `/` (all requests).
@@ -18,7 +17,6 @@ This is the start.
 
 ## 2\. DispatcherServlet Calls `doDispatch()`
 
----
 
 The main method of the entire web layer:
 
@@ -34,7 +32,6 @@ Inside `doDispatch()`, these steps happen:
 
 ## 3\. Find the Matching `@Controller` Method (HandlerMapping)
 
----
 
 `DispatcherServlet` asks all registered `HandlerMapping` beans:
 
@@ -63,7 +60,6 @@ A `HandlerMethod` object describing which controller method to call.
 
 ## 4\. Find the Right `HandlerAdapter`
 
----
 
 Not all handlers are methods.  
 Some are controllers, some are functions.
@@ -90,7 +86,6 @@ This adapter knows how to:
 
 ## 5\. Resolve Method Arguments (`HandlerMethodArgumentResolver`)
 
----
 
 Before calling the controller method, Spring prepares the arguments.
 
@@ -118,7 +113,6 @@ Flow:
 
 ## 6\. Invoke the Controller Method
 
----
 
 Now Spring calls your method:
 
@@ -149,7 +143,6 @@ It delegates again.
 
 ## 7\. Handle the Return Value (`HandlerMethodReturnValueHandler`)
 
----
 
 Spring must convert the controller return value into a web response.
 
@@ -175,7 +168,6 @@ For REST controllers:
 
 ## 8\. Message Conversion to JSON/XML (`HttpMessageConverter`)
 
----
 
 If the controller returns an object:
 
@@ -196,7 +188,6 @@ The object becomes JSON written to the `HttpServletResponse` output stream.
 
 ## 9\. Exception Handling (`HandlerExceptionResolver`)
 
----
 
 If the controller throws an exception:
 
@@ -227,7 +218,7 @@ Examples:
 
 ## 10\. View Resolution (If MVC HTML App) (`ViewResolver`)
 
----
+
 
 If the controller returns:
 
@@ -252,7 +243,6 @@ The view is rendered into HTML and written to the response.
 
 ## 11\. Send the Response Back to Tomcat
 
----
 
 Finally:
 
@@ -273,7 +263,6 @@ Tomcat writes the response back to the client.
 
 ## Summary of the Internal Flow
 
----
 
 1.  Tomcat receives request
     

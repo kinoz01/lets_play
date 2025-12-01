@@ -8,9 +8,8 @@ Maven knows it should use the Spring Boot Maven Plugin and its `repackage` goal 
 
 The most common way a Spring Boot project is set up is by inheriting from the special **`spring-boot-starter-parent`** project. This inheritance is defined at the very beginning of your project's `pom.xml`:
 
-XML
 
-```
+```xml
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
@@ -28,9 +27,8 @@ This parent POM provides a massive amount of inherited configuration, including 
 
 If you **cannot** or **choose not** to use the `spring-boot-starter-parent` (perhaps because you have another parent POM), you must explicitly declare and configure the plugin in your project's `pom.xml` under the `<build>` section:
 
-XML
 
-```
+```xml
 <build>
     <plugins>
         <plugin>

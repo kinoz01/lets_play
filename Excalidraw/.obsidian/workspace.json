@@ -20,6 +20,18 @@
             }
           },
           {
+            "id": "09f8b1daf7c96196",
+            "type": "leaf",
+            "state": {
+              "type": "excalidraw",
+              "state": {
+                "file": "excali/Reverse Engineering.excalidraw.md"
+              },
+              "icon": "excalidraw-icon",
+              "title": "Reverse Engineering.excalidraw"
+            }
+          },
+          {
             "id": "6f271e0964c17106",
             "type": "leaf",
             "state": {
@@ -31,7 +43,8 @@
               "title": "API architecture.excalidraw"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -202,15 +215,17 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "52f5d07aeded30b7",
+  "active": "09f8b1daf7c96196",
   "lastOpenFiles": [
+    "set -a.md",
+    "set -e.md",
+    "excali/Reverse Engineering.excalidraw.md",
+    "User Entity (model).md",
+    "excali/main.excalidraw.md",
     "@EventListener.md",
     "ODM vs ORM.md",
     "Hellow World Spring vs Spring Boot.md",
-    "excali/main.excalidraw.md",
-    "excali/Reverse Engineering.excalidraw.md",
     "ApplicationContextListener.md",
-    "User Entity (model).md",
     "ApplicationContextListeners.md",
     "excali/API architecture.excalidraw.md",
     "Annotation.md",
@@ -228,8 +243,6 @@
     "keystore.p12.md",
     "MongoDB vs PostgreSQL.md",
     "Sharding.md",
-    "PostgreSQL vs SQLite.md",
-    "appliction.properties.md",
     "53ef2102-api-penetration-testing.png",
     "Untitled",
     "Excalidraw",

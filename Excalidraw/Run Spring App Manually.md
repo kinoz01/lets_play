@@ -8,9 +8,8 @@ The `spring-boot:run` goal gives you a fast, runnable application from your sour
 
 You would first need to manually compile your application's Java source code using the `javac` compiler:
 
-Bash
 
-```
+```bash
 # 1. Manually Compile Your Code
 # This command compiles all .java files into .class files in the target/classes directory.
 # (This is what 'mvn compile' does)

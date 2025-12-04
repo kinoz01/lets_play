@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for lets-play-spring on 2025-11-21T08:06:55+01:00
+# fly.toml app configuration file generated for lets-play-spring on 2025-12-04T12:33:02+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -29,13 +29,6 @@ primary_region = 'iad'
   [[services.ports]]
     port = 443
     handlers = ['tls', 'http']
-
-  [[services.http_checks]]
-    interval = '15s'
-    timeout = '5s'
-    grace_period = '20s'
-    method = 'GET'
-    path = '/actuator/health'
 
 [[vm]]
   memory = '1gb'

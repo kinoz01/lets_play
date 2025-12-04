@@ -20,7 +20,7 @@ When you run `mvn spring-boot:run`, the plugin constructs the classpath for the 
 
 - It gathers all **`compile`** and **`runtime`** dependencies resolved by Maven Core.
     
-- It explicitly includes the project's compiled classes and **`src/main/resources`** directory directly on the classpath.1
+- It explicitly includes the project's compiled classes and **`src/main/resources`** directory directly on the classpath.
     
     - **Reason:** This is done to enable "hot refreshing" of resources (like HTML, CSS, or properties files) during development, allowing you to see changes without a full rebuild.2
         
@@ -29,7 +29,7 @@ When you run `mvn spring-boot:run`, the plugin constructs the classpath for the 
 
 ### 2. For Packaging (Executable JARs)
 
-This is where the Spring Boot Plugin fundamentally changes the structure compared to a standard Maven build. The plugin's **`repackage`** goal creates a "fat JAR" (or "uber-jar"):3
+This is where the Spring Boot Plugin fundamentally changes the structure compared to a standard Maven build. The plugin's **`repackage`** goal creates a "fat JAR" (or "uber-jar")
 
 |**Feature**|**Standard Maven JAR**|**Spring Boot Executable JAR**|
 |---|---|---|
@@ -39,9 +39,9 @@ This is where the Spring Boot Plugin fundamentally changes the structure compare
 
 The plugin alters the classpath mechanism:
 
-1. It bundles all dependencies into the final JAR, usually under a directory like `BOOT-INF/lib`.4
+1. It bundles all dependencies into the final JAR, usually under a directory like `BOOT-INF/lib`.
     
-2. It rewrites the JAR's `MANIFEST.MF` to point the `Main-Class` to the **Spring Boot Loader** (`JarLauncher`).5
+2. It rewrites the JAR's `MANIFEST.MF` to point the `Main-Class` to the **Spring Boot Loader** (`JarLauncher`).
     
 3. When you run `java -jar your-app.jar`, the **Spring Boot Loader** uses a **custom classloader** to find and load classes from the nested JARs inside `BOOT-INF/lib`, effectively creating the runtime classpath from within the single file.
     

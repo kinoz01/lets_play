@@ -13,7 +13,9 @@ The most common way a Spring Boot project is set up is by inheriting from the sp
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.2.5</version> <relativePath/> </parent>
+    <version>3.2.5</version> 
+    <relativePath/> 
+</parent>
 ```
 
 This parent POM provides a massive amount of inherited configuration, including **Plugin Management**. Specifically, the parent POM **pre-configures** the `spring-boot-maven-plugin` and **binds** its `repackage` goal to the standard Maven `package` lifecycle phase.

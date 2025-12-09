@@ -4,5 +4,7 @@
   "accentColor": "",
   "enabledCssSnippets": [
     "style"
-  ]
+  ],
+  "baseFontSize": 16,
+  "baseFontSizeAction": true
 }

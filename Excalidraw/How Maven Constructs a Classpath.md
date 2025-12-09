@@ -44,7 +44,7 @@ The **scope** of a dependency determines when and where it's needed—compile ti
 
 ### 3. 🔗 Resolving Transitive Dependencies and Conflicts
 
-This is the most complex step. Most of the JARs in your classpath come not from your direct declarations, but from your dependencies' own dependencies (**transitive dependencies**).
+This is the most complex step. Most of the JARs in your `classpath` come not from your direct declarations, but from your dependencies' own dependencies (**transitive dependencies**).
 
 1. **Dependency Graph Creation:** For every direct dependency you've kept after scope filtering, Maven looks inside its `pom.xml` (which is downloaded and stored in the **local repository** at `~/.m2/repository`). It reads that dependency's dependencies, and then _their_ dependencies, recursively, building a large **dependency graph**.
     

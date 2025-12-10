@@ -11,12 +11,14 @@
             "id": "52f5d07aeded30b7",
             "type": "leaf",
             "state": {
-              "type": "excalidraw",
+              "type": "markdown",
               "state": {
-                "file": "excali/Reverse Engineering.excalidraw.md"
+                "file": "CSRF.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "excalidraw-icon",
-              "title": "Reverse Engineering.excalidraw"
+              "icon": "lucide-file",
+              "title": "CSRF"
             }
           },
           {
@@ -159,7 +161,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "csrf",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -180,7 +182,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -300,8 +303,11 @@
   },
   "active": "52f5d07aeded30b7",
   "lastOpenFiles": [
-    "How Maven Constructs a Classpath.md",
+    "CORS, SOP, CSP, CSRF.md",
     "excali/Reverse Engineering.excalidraw.md",
+    "GlobalExceptionHandler.md",
+    "super().md",
+    "How Maven Constructs a Classpath.md",
     "mvn package in Spring.md",
     "JwtAuthenticationFilter.md",
     "excali/main.excalidraw.md",
@@ -323,9 +329,6 @@
     "excali/API architecture.excalidraw.md",
     "Layered Architecture.md",
     "MVC vs Layered architecture.md",
-    "Monolithic Architecture.md",
-    "Microservices Architecture.md",
-    "What is Spring Boot.md",
     "curlybra.svg",
     "clip.svg",
     "Excalidraw/Scripts/Downloaded/Slideshow.svg",

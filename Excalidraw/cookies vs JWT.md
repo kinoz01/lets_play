@@ -47,4 +47,3 @@ JWTs (JSON Web Tokens) are typically stored in the browser's **`localStorage`** 
 |**Cross-Site Behavior**|Sent automatically even if the request is triggered by an external site.|**Never** sent automatically. Requires script execution and manual header injection.|
 |**CSRF Defense**|Requires an added layer (CSRF Token) to stop the abuse of the auto-sent cookie.|Inherently protected because the credentials (the token) are not automatically sent.|
 
-Exporter vers Sheets

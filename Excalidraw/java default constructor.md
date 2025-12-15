@@ -26,12 +26,11 @@ public class MyClass {
     
 - It calls `super()`, ensuring that the parent class is initialized correctly.
     
-
 ---
 
 ### 2. The "Gotcha": When Java Stops Helping
 
-This is the most common error for beginners. **As soon as you define _any_ constructor** (even one that takes arguments), the compiler **stops** creating the default constructor.2
+This is the most common error for beginners. **As soon as you define _any_ constructor** (even one that takes arguments), the compiler **stops** creating the default constructor.
 
 Java assumes that since you wrote a constructor, you want full control over how the object is created and does not want to interfere.
 

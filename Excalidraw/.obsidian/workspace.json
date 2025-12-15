@@ -8,48 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "52f5d07aeded30b7",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "CSRF.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "CSRF"
-            }
-          },
-          {
-            "id": "62ac5ae886d5355a",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "How Maven Constructs a Classpath.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "How Maven Constructs a Classpath"
-            }
-          },
-          {
-            "id": "eb43bf4985040f8d",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "mvn package in Spring.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "mvn package in Spring"
-            }
-          },
-          {
             "id": "65857ca1c5ede744",
             "type": "leaf",
             "state": {
@@ -67,12 +25,56 @@
             "id": "505c2fc93b603df3",
             "type": "leaf",
             "state": {
-              "type": "excalidraw",
+              "type": "markdown",
               "state": {
-                "file": "excali/Reverse Engineering.excalidraw.md"
+                "file": "ApiError lombok code.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "excalidraw-icon",
-              "title": "Reverse Engineering.excalidraw"
+              "icon": "lucide-file",
+              "title": "ApiError lombok code"
+            }
+          },
+          {
+            "id": "e798d8b4c644a15f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Annotation.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Annotation"
+            }
+          },
+          {
+            "id": "522c60de7cb7fbfe",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "super() note.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "super() note"
+            }
+          },
+          {
+            "id": "4b05ec3cf071ef60",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "cookies vs JWT.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "cookies vs JWT"
             }
           },
           {
@@ -129,7 +131,8 @@
               "title": "Spring name origin"
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -161,7 +164,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "csrf",
+                "query": "reflection",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -301,34 +304,34 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "52f5d07aeded30b7",
+  "active": "e798d8b4c644a15f",
   "lastOpenFiles": [
-    "CORS, SOP, CSP, CSRF.md",
+    "super() note.md",
     "excali/Reverse Engineering.excalidraw.md",
-    "GlobalExceptionHandler.md",
+    "User Entity (model).md",
+    "JDK Dynamic Proxy.md",
+    "Framework Philosophy.md",
+    "Deserialize.md",
+    "Annotation.md",
+    "java default constructor.md",
     "super().md",
+    "ApiError lombok code.md",
+    "JwtAuthenticationFilter.md",
+    "cookies vs JWT.md",
+    "JWT.md",
+    "JWT Token Generation.md",
+    "ODM, DAO and Repository.md",
+    "method-level security.md",
+    "@EventListener.md",
+    "Spring Expression Language (SpEL).md",
+    "SecurityContext.md",
+    "CSRF.md",
+    "CORS, SOP, CSP, CSRF.md",
+    "GlobalExceptionHandler.md",
     "How Maven Constructs a Classpath.md",
     "mvn package in Spring.md",
-    "JwtAuthenticationFilter.md",
     "excali/main.excalidraw.md",
     "SpringBootApplication annotation.md",
-    "Annotation.md",
-    "Framework Philosophy.md",
-    "CustomUserDetailsService.md",
-    "User Entity (model).md",
-    "Servlet, Servlet API, Web Container.md",
-    "Deserialize.md",
-    "excali/UML.excalidraw.md",
-    "serialized.md",
-    "External Modules.md",
-    "Aspect.md",
-    "Layered Architecture Our API as example.md",
-    "DTO.md",
-    "excali/Web application types.excalidraw.md",
-    "excali/Blocking vs Non-Blocking IO.excalidraw.md",
-    "excali/API architecture.excalidraw.md",
-    "Layered Architecture.md",
-    "MVC vs Layered architecture.md",
     "curlybra.svg",
     "clip.svg",
     "Excalidraw/Scripts/Downloaded/Slideshow.svg",

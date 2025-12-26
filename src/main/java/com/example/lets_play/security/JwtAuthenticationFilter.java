@@ -26,13 +26,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
 	private final UserDetailsService userDetailsService;
-    private final ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper;
 
 	@Autowired
-	public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService, ObjectMapper objectMapper) {
+	public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService,
+			ObjectMapper objectMapper) {
 		this.jwtService = jwtService;
 		this.userDetailsService = userDetailsService;
-        this.objectMapper = objectMapper;
+		this.objectMapper = objectMapper;
 	}
 
 	@Override
@@ -48,30 +49,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		jwt = authHeader.substring(7);
-        try {
-		    email = jwtService.extractUsername(jwt);
-        } catch (JwtException | IllegalArgumentException ex) {
-            writeErrorResponse(response, request, "Invalid or malformed token");
-            return;
-        }
+		try {
+			email = jwtService.extractUsername(jwt);
+		} catch (JwtException | IllegalArgumentException ex) {
+			writeErrorResponse(response, request, "Invalid or malformed token");
+			return;
+		}
 		if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-			UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-			if (email.equals(userDetails.getUsername()) && !jwtService.isTokenExpired(jwt)) {
-				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
-						null, userDetails.getAuthorities());
-				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				SecurityContextHolder.getContext().setAuthentication(authToken);
+			try {
+				UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+				if (email.equals(userDetails.getUsername()) && !jwtService.isTokenExpired(jwt)) {
+					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+							null, userDetails.getAuthorities());
+					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					SecurityContextHolder.getContext().setAuthentication(authToken);
+
+				}
+			} catch (Exception ex) {
+				writeErrorResponse(response, request, "User not found for the provided token");
+				return;
 			}
 		}
 		filterChain.doFilter(request, response);
 	}
 
-    private void writeErrorResponse(HttpServletResponse response, HttpServletRequest request, String message)
-            throws IOException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType("application/json");
-        ApiError error = new ApiError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                message, request.getRequestURI());
-        response.getWriter().write(objectMapper.writeValueAsString(error));
-    }
+	private void writeErrorResponse(HttpServletResponse response, HttpServletRequest request, String message)
+			throws IOException {
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setContentType("application/json");
+		ApiError error = new ApiError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+				message, request.getRequestURI());
+		response.getWriter().write(objectMapper.writeValueAsString(error));
+	}
 }

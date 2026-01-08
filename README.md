@@ -1,6 +1,6 @@
 # Lets Play API
 
-Lets Play API is a basic Spring Boot + MongoDB CRUD API that use JWT authentication, request throttling, method-level authorization, and centralized error handling. The service can be run locally or accessed through the hosted instance at **https://lets-play-spring.fly.dev**.
+Lets Play API is a basic Spring Boot + MongoDB CRUD API that use JWT authentication, request throttling, method-level authorization, and centralized error handling. The service can be run locally or accessed through the hosted instance at **https://springapi.fly.dev**.
 
 ## Overview
 

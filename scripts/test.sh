@@ -9,7 +9,7 @@
 # local self signed: https://localhost:8443
 # Deploy: https://lets-play-spring.fly.dev
 
-BASE_URL="http://localhost:8080"
+BASE_URL="https://ecomspringapi.fly.dev"
 
 # curl base command (silent body, show errors, do not verify TLS)
 CURL_CMD=(curl --insecure -sS)

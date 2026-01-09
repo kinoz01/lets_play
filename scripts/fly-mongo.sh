@@ -50,7 +50,7 @@ if [[ -n "${FLY_ORG:-}" ]]; then
   ORG_FLAG=(--org "$FLY_ORG")
 fi
 VOLUME_NAME="${MONGO_VOLUME_NAME:-mongo_data}"
-VOLUME_SIZE="${MONGO_VOLUME_SIZE:-5}"
+VOLUME_SIZE="${MONGO_VOLUME_SIZE:-1}"
 MONGO_IMAGE="${MONGO_IMAGE:-mongo:7}"
 MONGO_MACHINE_NAME="${MONGO_MACHINE_NAME:-mongo-primary}"
 MONGO_VM_SIZE="${MONGO_VM_SIZE:-shared-cpu-1x}"

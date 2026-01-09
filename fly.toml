@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for lets-play-spring on 2025-12-04T12:33:02+01:00
+# fly.toml app configuration file generated for lets-play-spring on 2026-01-09T00:56:44+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -31,6 +31,7 @@ primary_region = 'iad'
     handlers = ['tls', 'http']
 
 [[vm]]
-  memory = '1gb'
+  memory = '256mb'
   cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 256
